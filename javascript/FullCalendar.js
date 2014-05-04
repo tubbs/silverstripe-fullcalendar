@@ -1,5 +1,5 @@
 ;(function($) {
 	$("#full-calendar").fullCalendar({
-		events: $("#full-calendar").attr("href")
+		events: $("#full-calendar").data("events")
 	});
 })(jQuery);
