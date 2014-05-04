@@ -1,0 +1,9 @@
+---
+Name: fullcalendar
+---
+Calendar:
+  extensions:
+    ['FullCalendarExtension']
+Calendar_Controller:
+  extensions:
+    ['FullCalendarControllerExtension']
