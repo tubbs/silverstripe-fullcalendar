@@ -14,17 +14,16 @@ class FullCalendarControllerExtension extends Extension {
 	/**
 	 * @return string|array
 	 */
-	public function index() {
+	public function onAfterInit() {
+		Debug::log('onAfterInit');
 		if (!$this->owner->UseFullCalendar) return array();
 
-		Requirements::javascript(THIRDPARTY_DIR . '/jquery/jquery.js');
-		Requirements::javascript('fullcalendar/thirdparty/jquery-fullcalendar/fullcalendar.js');
-		Requirements::javascript('fullcalendar/javascript/FullCalendar.js');
-		Requirements::css('fullcalendar/thirdparty/jquery-fullcalendar/fullcalendar.css');
-
-		return $this->owner->renderWith(array(
-			'FullCalendar', 'CalendarPage', 'Page', 'ContentController'
-		));
+		Requirements::css('silverstripe-fullcalendar/thirdparty/jquery-fullcalendar/fullcalendar.css');
+		
+		Requirements::javascript('silverstripe-fullcalendar/thirdparty/jquery-fullcalendar/moment.min.js');
+		// Requirements::javascript('silverstripe-fullcalendar/thirdparty/jquery-fullcalendar/jquery-ui.custom.min.js');
+		Requirements::javascript('silverstripe-fullcalendar/thirdparty/jquery-fullcalendar/fullcalendar.min.js');
+		Requirements::javascript('silverstripe-fullcalendar/javascript/FullCalendar.js');
 	}
 
 	/**
@@ -37,18 +36,19 @@ class FullCalendarControllerExtension extends Extension {
 		$start = $request->getVar('start');
 		$end   = $request->getVar('end');
 
-		$events = $this->owner->data()->Events(null, $start, $end);
 		$result = array();
 
-		if ($events) foreach ($events as $event) {
+		$events = $this->owner->getEventList($start, $end);
+		if ($events) foreach ($events as $evt) {
 			$result[] = array(
-				'id'        => $event->ID,
-				'title'     => $event->EventTitle(),
-				'start'     => $event->getStartTimestamp(),
-				'end'       => $event->getEndTimestamp(),
-				'allDay'    => (bool) $event->is_all_day,
-				'url'       => $event->Link(),
-				'className' => $event->Event()->Parent()->ElementName());
+				'id'        => $evt->ID,
+				'title'     => $evt->Title,
+				'start'     => $evt->StartDate . ($evt->StartTime !== null ? 'T' . $evt->StartTime : ''),
+				'end'       => $evt->EndDate . ($evt->EndTime !== null ? 'T' . $evt->EndTime : ''),
+				'allDay'    => $evt->AllDay ? true : false,
+				'url'       => $evt->ClassName == 'CalendarDateTime' ? $evt->Link() : '',
+				'className' => $evt->ClassName,
+			);
 		}
 
 		$response = new SS_HTTPResponse(Convert::array2json($result));

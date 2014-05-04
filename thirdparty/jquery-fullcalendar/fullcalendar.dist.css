@@ -599,11 +599,3 @@ table.fc-border-separate {
 	}
 	
 	
-.cms #full-calendar a {
-	color: white;
-}
-
-#full-calendar a.CalendarAnnouncement {
-	background-color: green;
-	border-color: green;
-}
