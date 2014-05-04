@@ -15,7 +15,7 @@ class FullCalendarControllerExtension extends Extension {
 	 * @return string|array
 	 */
 	public function onAfterInit() {
-		Debug::log('onAfterInit');
+		
 		if (!$this->owner->UseFullCalendar) return array();
 
 		Requirements::css('silverstripe-fullcalendar/thirdparty/jquery-fullcalendar/fullcalendar.css');
